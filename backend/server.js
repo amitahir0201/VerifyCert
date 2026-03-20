@@ -25,9 +25,9 @@ if (!fs.existsSync(uploadsDir)) {
 const app = express();
 
 // Middleware
-const frontendURL = process.env.FRONTEND_URL || 'http://localhost:5173';
+const frontendURL = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, '');
 app.use(cors({
-    origin: frontendURL,
+    origin: [frontendURL, `${frontendURL}/`],
     credentials: true
 }));
 app.use(express.json());
