@@ -64,25 +64,27 @@ const AdminDashboard = () => {
                     ) : stats.recent.length === 0 ? (
                         <div className="p-8 text-center text-gray-500">No certificates yet. <Link to="/admin/upload" className="text-cyan-400 hover:underline">Upload an Excel file</Link>.</div>
                     ) : (
-                        <table className="w-full">
-                            <thead className="bg-gray-800/50 text-gray-400 text-xs uppercase">
-                                <tr>
-                                    {['Certificate ID', 'Student Name', 'Domain', 'Issue Date'].map(h => (
-                                        <th key={h} className="px-6 py-3 text-left">{h}</th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-800">
-                                {stats.recent.map((c) => (
-                                    <tr key={c.certificateId} className="hover:bg-gray-800/30 transition-colors">
-                                        <td className="px-6 py-4 font-mono text-cyan-400 text-sm">{c.certificateId}</td>
-                                        <td className="px-6 py-4 text-white text-sm">{c.studentName}</td>
-                                        <td className="px-6 py-4 text-gray-300 text-sm">{c.internshipDomain}</td>
-                                        <td className="px-6 py-4 text-gray-400 text-sm">{new Date(c.issueDate).toLocaleDateString()}</td>
+                        <div className="overflow-x-auto">
+                            <table className="w-full min-w-[600px]">
+                                <thead className="bg-gray-800/50 text-gray-400 text-xs uppercase">
+                                    <tr>
+                                        {['Certificate ID', 'Student Name', 'Domain', 'Issue Date'].map(h => (
+                                            <th key={h} className="px-6 py-3 text-left">{h}</th>
+                                        ))}
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody className="divide-y divide-gray-800">
+                                    {stats.recent.map((c) => (
+                                        <tr key={c.certificateId} className="hover:bg-gray-800/30 transition-colors">
+                                            <td className="px-6 py-4 font-mono text-cyan-400 text-sm">{c.certificateId}</td>
+                                            <td className="px-6 py-4 text-white text-sm">{c.studentName}</td>
+                                            <td className="px-6 py-4 text-gray-300 text-sm">{c.internshipDomain}</td>
+                                            <td className="px-6 py-4 text-gray-400 text-sm">{new Date(c.issueDate).toLocaleDateString()}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     )}
                 </div>
             </div>

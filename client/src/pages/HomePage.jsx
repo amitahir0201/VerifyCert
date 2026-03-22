@@ -22,16 +22,16 @@ const HomePage = () => {
                 <div className="inline-block mb-4 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-sm font-medium">
                     ✦ Instant Certificate Verification
                 </div>
-                <h1 className="text-5xl font-extrabold text-white mb-4 leading-tight">
+                <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-4 leading-tight">
                     Verify Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Certificate</span>
                 </h1>
-                <p className="text-gray-400 text-lg max-w-md mx-auto">
+                <p className="text-gray-400 text-base md:text-lg max-w-md mx-auto">
                     Enter your Certificate ID below to instantly verify your internship certificate and download it.
                 </p>
             </div>
 
             {/* Search Card */}
-            <div className="w-full max-w-lg bg-gray-900/60 backdrop-blur border border-gray-700/50 rounded-2xl p-8 shadow-2xl">
+            <div className="w-full max-w-lg bg-gray-900/60 backdrop-blur border border-gray-700/50 rounded-2xl p-6 md:p-8 shadow-2xl">
                 <form onSubmit={handleVerify} className="flex flex-col gap-4">
                     <label className="text-gray-300 text-sm font-medium">Certificate ID</label>
                     <input
@@ -52,14 +52,14 @@ const HomePage = () => {
             </div>
 
             {/* Features */}
-            <div className="grid grid-cols-3 gap-6 mt-16 max-w-2xl w-full">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-12 md:mt-16 max-w-2xl w-full">
                 {[
                     { icon: '🔒', title: 'Secure', desc: 'Certificates stored securely in MongoDB' },
                     { icon: '⚡', title: 'Instant', desc: 'Real-time verification results' },
                     { icon: '📄', title: 'Downloadable', desc: 'Download your PDF certificate anytime' },
                 ].map((f) => (
                     <div key={f.title} className="text-center p-4 rounded-xl bg-gray-900/40 border border-gray-800">
-                        <div className="text-3xl mb-2">{f.icon}</div>
+                        <div className="text-2xl md:text-3xl mb-2">{f.icon}</div>
                         <div className="text-white font-semibold text-sm mb-1">{f.title}</div>
                         <div className="text-gray-500 text-xs">{f.desc}</div>
                     </div>

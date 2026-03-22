@@ -32,7 +32,7 @@ const certificateSchema = new mongoose.Schema({
     },
     certificateURL: {
         type: String,
-        required: true
+        required: false
     }
 });
 

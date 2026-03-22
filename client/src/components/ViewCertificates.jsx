@@ -8,7 +8,8 @@ export default function ViewCertificates() {
   useEffect(() => {
     const fetchCertificates = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/certificates/fetch-all`);
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+        const response = await fetch(`${apiUrl}/certificates/fetch-all`);
         if (response.ok) {
           const data = await response.json();
           setCertificates(data.certificates);
@@ -28,7 +29,8 @@ export default function ViewCertificates() {
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/certificates/delete/${id}`, {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiUrl}/certificates/delete/${id}`, {
         method: 'DELETE'
       });
       if (response.ok) {

@@ -24,7 +24,7 @@ const CertificateCard = ({ cert }) => {
                     View
                 </button>
                 <a
-                    href={`http://localhost:5000/api/certificates/download/${cert.certificateId}`}
+                    href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/certificates/download/${cert.certificateId}`}
                     target="_blank"
                     rel="noreferrer"
                     className="flex-1 text-xs text-center bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 py-2 rounded-lg transition-colors"

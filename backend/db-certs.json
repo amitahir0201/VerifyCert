@@ -1,0 +1,46 @@
+[
+  {
+    "_id": "69c02ee7a1062e5348b0c38f",
+    "certificateId": "03F9FC77",
+    "studentName": "amit ahir",
+    "email": "amitahir0201@gmail.com",
+    "internshipDomain": "Web Development",
+    "startDate": "2025-01-01T00:00:00.000Z",
+    "endDate": "2025-03-01T00:00:00.000Z",
+    "issueDate": "2026-03-22T18:03:19.633Z",
+    "__v": 0
+  },
+  {
+    "_id": "69c02ccfc5d197fe673c2afd",
+    "certificateId": "015DBC1C",
+    "studentName": "amit ahir",
+    "email": "amitahir0201@gmail.com",
+    "internshipDomain": "Web Development",
+    "startDate": "2025-01-01T00:00:00.000Z",
+    "endDate": "2025-03-01T00:00:00.000Z",
+    "issueDate": "2026-03-22T17:54:23.225Z",
+    "__v": 0
+  },
+  {
+    "_id": "69c027d4cbc463c494bfee7d",
+    "certificateId": "18FDE7FD",
+    "studentName": "amit ahir",
+    "email": "amitahir0201@gmail.com",
+    "internshipDomain": "Web Development",
+    "startDate": "2025-01-01T00:00:00.000Z",
+    "endDate": "2025-03-01T00:00:00.000Z",
+    "issueDate": "2026-03-22T17:33:08.872Z",
+    "__v": 0
+  },
+  {
+    "_id": "69c027d2cbc463c494bfee7a",
+    "certificateId": "6EFA6A8E",
+    "studentName": "amit ahir",
+    "email": "amitahir0201@gmail.com",
+    "internshipDomain": "Web Development",
+    "startDate": "2025-01-01T00:00:00.000Z",
+    "endDate": "2025-03-01T00:00:00.000Z",
+    "issueDate": "2026-03-22T17:33:06.513Z",
+    "__v": 0
+  }
+]

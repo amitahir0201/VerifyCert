@@ -92,22 +92,24 @@ const UploadExcel = () => {
                         <div className="px-6 py-4 bg-green-500/10 border-b border-green-500/20">
                             <h3 className="text-green-400 font-semibold">✓ {result.message}</h3>
                         </div>
-                        <table className="w-full">
-                            <thead className="bg-gray-800/50 text-gray-400 text-xs uppercase">
-                                <tr>
-                                    <th className="px-6 py-3 text-left">Student</th>
-                                    <th className="px-6 py-3 text-left">Certificate ID</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-800">
-                                {result.certificates.map((c) => (
-                                    <tr key={c.certificateId}>
-                                        <td className="px-6 py-3 text-white text-sm">{c.studentName}</td>
-                                        <td className="px-6 py-3 font-mono text-cyan-400 text-sm">{c.certificateId}</td>
+                        <div className="overflow-x-auto">
+                            <table className="w-full min-w-[400px]">
+                                <thead className="bg-gray-800/50 text-gray-400 text-xs uppercase">
+                                    <tr>
+                                        <th className="px-6 py-3 text-left">Student</th>
+                                        <th className="px-6 py-3 text-left">Certificate ID</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody className="divide-y divide-gray-800">
+                                    {result.certificates.map((c) => (
+                                        <tr key={c.certificateId}>
+                                            <td className="px-6 py-3 text-white text-sm">{c.studentName}</td>
+                                            <td className="px-6 py-3 font-mono text-cyan-400 text-sm">{c.certificateId}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 )}
             </div>

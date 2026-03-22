@@ -24,7 +24,8 @@ const CertificateDetails = () => {
     }, [certificateId]);
 
     const handleDownload = () => {
-        window.open(`http://localhost:5000/api/certificates/download/${certificateId}`, '_blank');
+        const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+        window.open(`${baseUrl}/certificates/download/${certificateId}`, '_blank');
     };
 
     const formatDate = (d) => new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -71,7 +72,7 @@ const CertificateDetails = () => {
                             from <strong>{formatDate(cert.startDate)}</strong> to <strong>{formatDate(cert.endDate)}</strong>
                         </p>
 
-                        <div className="grid grid-cols-2 gap-4 bg-gray-800/50 rounded-xl p-5 mb-6 text-left">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-800/50 rounded-xl p-5 mb-6 text-left">
                             {[
                                 { label: 'Certificate ID', value: cert.certificateId },
                                 { label: 'Issue Date', value: formatDate(cert.issueDate) },
@@ -80,7 +81,7 @@ const CertificateDetails = () => {
                             ].map(({ label, value }) => (
                                 <div key={label}>
                                     <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">{label}</p>
-                                    <p className="text-white font-medium text-sm">{value}</p>
+                                    <p className="text-white font-medium text-sm break-all">{value}</p>
                                 </div>
                             ))}
                         </div>

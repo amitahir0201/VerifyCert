@@ -4,7 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import Certificate from '../models/Certificate.js';
 import { generateCertificateId } from '../utils/generateCertificateId.js';
-import { generatePDFCertificate } from '../services/certificateService.js';
+import { streamPDFCertificate } from '../services/certificateService.js';
 import { sendCertificateEmail } from '../services/emailService.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -27,39 +27,66 @@ export const uploadExcel = async (req, res) => {
         }
 
         const results = [];
+        console.log(`Processing ${rows.length} rows from Excel...`);
 
         for (const row of rows) {
+            console.log('Original Row Data:', JSON.stringify(row));
+            
+            // Flexible column mapping (case-insensitive, ignores spaces)
+            const findKey = (keywords) => {
+                const keys = Object.keys(row);
+                return keys.find(k => {
+                    const normalized = k.toLowerCase().replace(/\s/g, '');
+                    return keywords.some(kw => normalized.includes(kw));
+                });
+            };
+
+            const studentNameKey = findKey(['studentname', 'name', 'candidate']);
+            const emailKey = findKey(['email', 'mail']);
+            const domainKey = findKey(['domain', 'internship', 'track']);
+            const startDateKey = findKey(['startdate', 'start']);
+            const endDateKey = findKey(['enddate', 'end']);
+
             const certificateId = generateCertificateId();
             const issueDate = new Date();
 
             const certData = {
                 certificateId,
-                studentName: row['Student Name'] || row['studentName'],
-                email: row['Email'] || row['email'],
-                internshipDomain: row['Domain'] || row['internshipDomain'],
-                startDate: new Date(row['Start Date'] || row['startDate']),
-                endDate: new Date(row['End Date'] || row['endDate']),
+                studentName: row[studentNameKey] || 'Student',
+                email: row[emailKey],
+                internshipDomain: row[domainKey] || 'Internship',
+                startDate: new Date(row[startDateKey] || new Date()),
+                endDate: new Date(row[endDateKey] || new Date()),
                 issueDate,
             };
 
-            const frontendBase = process.env.FRONTEND_URL || 'http://localhost:5173';
-            const verificationLink = `${frontendBase}/certificate/${certificateId}`;
+            console.log('Mapped Certificate Data:', JSON.stringify(certData));
 
-            // Generate PDF
-            const pdfPath = await generatePDFCertificate(certData, verificationLink);
-            certData.certificateURL = pdfPath;
+            if (!certData.email) {
+                console.warn(`Skipping email for ${certData.studentName} - No email found in columns: ${Object.keys(row).join(', ')}`);
+            }
+
+            const frontendBase = (process.env.FRONTEND_URL || '').replace(/\/$/, '');
+            const verificationLink = `${frontendBase}/certificate/${certificateId}`;
 
             // Save to MongoDB
             const certificate = new Certificate(certData);
             await certificate.save();
 
-            // Send email (non-blocking - log errors but don't fail request)
-            sendCertificateEmail(
-                certData.email,
-                certData.studentName,
-                certificateId,
-                verificationLink
-            ).catch(console.error);
+            // Send email (non-blocking)
+            if (certData.email) {
+                sendCertificateEmail(
+                    certData.email,
+                    certData.studentName,
+                    certificateId,
+                    verificationLink
+                ).then(success => {
+                    if (success) console.log(`Email process completed for ${certData.email}`);
+                    else console.error(`Email process failed for ${certData.email}`);
+                }).catch(err => {
+                    console.error(`Unexpected error sending email to ${certData.email}:`, err);
+                });
+            }
 
             results.push({ studentName: certData.studentName, certificateId });
         }
@@ -98,24 +125,12 @@ export const downloadCertificate = async (req, res) => {
             return res.status(404).json({ message: 'Certificate not found' });
         }
 
-        const filePath = path.join(__dirname, '..', certificate.certificateURL);
-        if (!fs.existsSync(filePath)) {
-            const frontendBase = process.env.FRONTEND_URL || 'http://localhost:5173';
-            const verificationLink = `${frontendBase}/certificate/${certificate.certificateId}`;
-            
-            // Regenerate the PDF if it's missing
-            await generatePDFCertificate(certificate, verificationLink);
-            
-            // Check again after regeneration
-            if (!fs.existsSync(filePath)) {
-                return res.status(404).json({ message: 'PDF file could not be generated' });
-            }
-        }
-
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename="${certificate.certificateId}.pdf"`);
-        fs.createReadStream(filePath).pipe(res);
+        const frontendBase = (process.env.FRONTEND_URL || '').replace(/\/$/, '');
+        const verificationLink = `${frontendBase}/certificate/${certificate.certificateId}`;
+        
+        await streamPDFCertificate(certificate, verificationLink, res);
     } catch (error) {
+        console.error('Download error:', error);
         res.status(500).json({ message: 'Server error' });
     }
 };
@@ -137,11 +152,8 @@ export const deleteCertificate = async (req, res) => {
         if (!certificate) {
             return res.status(404).json({ message: 'Certificate not found' });
         }
-        // Optionally delete the PDF file too
-        const filePath = path.join(__dirname, '..', certificate.certificateURL);
-        if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
-        }
+        // No more physical PDF files to delete (generated on the fly)
+        // No more physical PDF files to delete (generated on the fly)
         res.json({ message: 'Certificate deleted' });
     } catch (error) {
         res.status(500).json({ message: 'Server error' });

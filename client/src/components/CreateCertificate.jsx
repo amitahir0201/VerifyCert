@@ -23,8 +23,9 @@ export default function CreateCertificate() {
         console.log(date);
 
         try {
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
             const response = await fetch(
-                `http://localhost:5000/certificates/create`,
+                `${apiUrl}/certificates/create`,
                 {
                     method: "POST",
                     headers: {

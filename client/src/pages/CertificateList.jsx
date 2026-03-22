@@ -73,49 +73,51 @@ const CertificateList = () => {
                     <div className="text-center text-gray-500 py-16">No certificates found.</div>
                 ) : (
                     <div className="bg-gray-900 border border-gray-700/50 rounded-2xl overflow-hidden">
-                        <table className="w-full">
-                            <thead className="bg-gray-800/50 text-gray-400 text-xs uppercase">
-                                <tr>
-                                    {['Certificate ID', 'Student Name', 'Email', 'Domain', 'Issue Date', 'Actions'].map(h => (
-                                        <th key={h} className="px-5 py-3 text-left">{h}</th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-800">
-                                {filtered.map((c) => (
-                                    <tr key={c.certificateId} className="hover:bg-gray-800/30 transition-colors">
-                                        <td className="px-5 py-4 font-mono text-cyan-400 text-sm">{c.certificateId}</td>
-                                        <td className="px-5 py-4 text-white text-sm font-medium">{c.studentName}</td>
-                                        <td className="px-5 py-4 text-gray-400 text-sm">{c.email}</td>
-                                        <td className="px-5 py-4 text-gray-300 text-sm">{c.internshipDomain}</td>
-                                        <td className="px-5 py-4 text-gray-400 text-sm">{new Date(c.issueDate).toLocaleDateString()}</td>
-                                        <td className="px-5 py-4 flex items-center gap-2">
-                                            <Link
-                                                to={`/admin/preview/${c.certificateId}`}
-                                                className="text-xs bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded-lg transition-colors"
-                                            >
-                                                Preview
-                                            </Link>
-                                            <a
-                                                href={`http://localhost:5000/api/certificates/download/${c.certificateId}`}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg transition-colors"
-                                            >
-                                                Download
-                                            </a>
-                                            <button
-                                                onClick={() => handleDelete(c.certificateId)}
-                                                disabled={deleting === c.certificateId}
-                                                className="text-xs bg-red-600/20 hover:bg-red-600/40 text-red-400 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
-                                            >
-                                                {deleting === c.certificateId ? '…' : 'Delete'}
-                                            </button>
-                                        </td>
+                        <div className="overflow-x-auto">
+                            <table className="w-full min-w-[900px]">
+                                <thead className="bg-gray-800/50 text-gray-400 text-xs uppercase">
+                                    <tr>
+                                        {['Certificate ID', 'Student Name', 'Email', 'Domain', 'Issue Date', 'Actions'].map(h => (
+                                            <th key={h} className="px-5 py-3 text-left">{h}</th>
+                                        ))}
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody className="divide-y divide-gray-800">
+                                    {filtered.map((c) => (
+                                        <tr key={c.certificateId} className="hover:bg-gray-800/30 transition-colors">
+                                            <td className="px-5 py-4 font-mono text-cyan-400 text-sm">{c.certificateId}</td>
+                                            <td className="px-5 py-4 text-white text-sm font-medium">{c.studentName}</td>
+                                            <td className="px-5 py-4 text-gray-400 text-sm">{c.email}</td>
+                                            <td className="px-5 py-4 text-gray-300 text-sm">{c.internshipDomain}</td>
+                                            <td className="px-5 py-4 text-gray-400 text-sm">{new Date(c.issueDate).toLocaleDateString()}</td>
+                                            <td className="px-5 py-4 flex items-center gap-2">
+                                                <Link
+                                                    to={`/admin/preview/${c.certificateId}`}
+                                                    className="text-xs bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap"
+                                                >
+                                                    Preview
+                                                </Link>
+                                                <a
+                                                    href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/certificates/download/${c.certificateId}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap"
+                                                >
+                                                    Download
+                                                </a>
+                                                <button
+                                                    onClick={() => handleDelete(c.certificateId)}
+                                                    disabled={deleting === c.certificateId}
+                                                    className="text-xs bg-red-600/20 hover:bg-red-600/40 text-red-400 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50 whitespace-nowrap"
+                                                >
+                                                    {deleting === c.certificateId ? '…' : 'Delete'}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 )}
             </div>

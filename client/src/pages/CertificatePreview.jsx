@@ -32,53 +32,55 @@ const CertificatePreview = () => {
                 </div>
 
                 {/* Certificate Template Preview */}
-                <div className="bg-white rounded-2xl overflow-hidden shadow-2xl shadow-cyan-500/10 border-4 border-gray-700">
-                    {/* Top Banner */}
-                    <div className="bg-gradient-to-r from-cyan-600 to-blue-800 py-8 px-10 text-center">
-                        <div className="text-white/60 text-sm uppercase tracking-[0.3em] mb-2">CertiCreate</div>
-                        <h2 className="text-white text-3xl font-extrabold tracking-wide">CERTIFICATE OF COMPLETION</h2>
-                    </div>
+                <div className="bg-white rounded-2xl overflow-hidden shadow-2xl shadow-cyan-500/10 border-4 border-gray-700 overflow-x-auto">
+                    <div className="min-w-[600px] md:min-w-0">
+                        {/* Top Banner */}
+                        <div className="bg-gradient-to-r from-cyan-600 to-blue-800 py-6 md:py-8 px-6 md:px-10 text-center">
+                            <div className="text-white/60 text-xs md:text-sm uppercase tracking-[0.3em] mb-2">CertiCreate</div>
+                            <h2 className="text-white text-2xl md:text-3xl font-extrabold tracking-wide uppercase">CERTIFICATE OF COMPLETION</h2>
+                        </div>
 
-                    {/* Body */}
-                    <div className="bg-gradient-to-b from-blue-50 to-white p-10 text-center">
-                        <p className="text-gray-500 text-base mb-3">This is to certify that</p>
-                        <h1 className="text-4xl font-extrabold text-gray-800 mb-3">{cert.studentName}</h1>
-                        <p className="text-gray-500 mb-2">has successfully completed an internship in</p>
-                        <p className="text-2xl font-bold text-blue-700 mb-5">{cert.internshipDomain}</p>
-                        <p className="text-gray-600 text-base mb-8">
-                            from <strong>{formatDate(cert.startDate)}</strong> to <strong>{formatDate(cert.endDate)}</strong>
-                        </p>
+                        {/* Body */}
+                        <div className="bg-gradient-to-b from-blue-50 to-white p-6 md:p-10 text-center">
+                            <p className="text-gray-500 text-sm md:text-base mb-3">This is to certify that</p>
+                            <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 mb-3 uppercase">{cert.studentName}</h1>
+                            <p className="text-gray-500 text-sm md:text-base mb-2">has successfully completed an internship in</p>
+                            <p className="text-xl md:text-2xl font-bold text-blue-700 mb-5">{cert.internshipDomain}</p>
+                            <p className="text-gray-600 text-sm md:text-base mb-8">
+                                from <strong>{formatDate(cert.startDate)}</strong> to <strong>{formatDate(cert.endDate)}</strong>
+                            </p>
 
-                        {/* Bottom Row */}
-                        <div className="flex items-end justify-between border-t-2 border-gray-200 pt-6 mt-4">
-                            {/* QR Placeholder */}
-                            <div className="flex flex-col items-center gap-1">
-                                <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400 text-3xl">
-                                    🔲
+                            {/* Bottom Row */}
+                            <div className="flex items-end justify-between border-t-2 border-gray-200 pt-6 mt-4">
+                                {/* QR Placeholder */}
+                                <div className="flex flex-col items-center gap-1">
+                                    <div className="w-16 md:w-20 h-16 md:h-20 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400 text-2xl md:text-3xl">
+                                        🔲
+                                    </div>
+                                    <span className="text-gray-400 text-[10px] md:text-xs">Scan to Verify</span>
                                 </div>
-                                <span className="text-gray-400 text-xs">Scan to Verify</span>
-                            </div>
 
-                            {/* Center Info */}
-                            <div className="text-center">
-                                <p className="text-xs text-gray-400 uppercase tracking-wider">Certificate ID</p>
-                                <p className="font-mono font-bold text-lg text-gray-700">{cert.certificateId}</p>
-                                <p className="text-xs text-gray-400 mt-1">{formatDate(cert.issueDate)}</p>
-                            </div>
+                                {/* Center Info */}
+                                <div className="text-center">
+                                    <p className="text-[10px] md:text-xs text-gray-400 uppercase tracking-wider">Certificate ID</p>
+                                    <p className="font-mono font-bold text-base md:text-lg text-gray-700">{cert.certificateId}</p>
+                                    <p className="text-[10px] md:text-xs text-gray-400 mt-1">{formatDate(cert.issueDate)}</p>
+                                </div>
 
-                            {/* Signature */}
-                            <div className="flex flex-col items-center gap-1">
-                                <div className="w-24 border-b-2 border-gray-800 mb-1"></div>
-                                <span className="text-gray-600 text-sm font-medium">Authorized Signature</span>
+                                {/* Signature */}
+                                <div className="flex flex-col items-center gap-1">
+                                    <div className="w-20 md:w-24 border-b-2 border-gray-800 mb-1"></div>
+                                    <span className="text-gray-600 text-xs md:text-sm font-medium">Authorized Signature</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Actions */}
-                <div className="flex gap-4 mt-6">
+                <div className="flex flex-col sm:flex-row gap-4 mt-6">
                     <a
-                        href={`http://localhost:5000/api/certificates/download/${certificateId}`}
+                        href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/certificates/download/${certificateId}`}
                         target="_blank"
                         rel="noreferrer"
                         className="flex-1 text-center bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold py-3 rounded-xl transition-all shadow-lg"
