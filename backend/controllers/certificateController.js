@@ -100,7 +100,16 @@ export const downloadCertificate = async (req, res) => {
 
         const filePath = path.join(__dirname, '..', certificate.certificateURL);
         if (!fs.existsSync(filePath)) {
-            return res.status(404).json({ message: 'PDF file not found' });
+            const frontendBase = process.env.FRONTEND_URL || 'http://localhost:5173';
+            const verificationLink = `${frontendBase}/certificate/${certificate.certificateId}`;
+            
+            // Regenerate the PDF if it's missing
+            await generatePDFCertificate(certificate, verificationLink);
+            
+            // Check again after regeneration
+            if (!fs.existsSync(filePath)) {
+                return res.status(404).json({ message: 'PDF file could not be generated' });
+            }
         }
 
         res.setHeader('Content-Type', 'application/pdf');

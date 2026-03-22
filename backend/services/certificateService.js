@@ -27,34 +27,110 @@ export const generatePDFCertificate = async (certificateData, verificationLink) 
             const stream = fs.createWriteStream(filePath);
             doc.pipe(stream);
 
-            doc.rect(0, 0, doc.page.width, doc.page.height).fill('#fff');
+            // Background Fill
+            doc.rect(0, 0, doc.page.width, doc.page.height).fill('#ffffff');
+
+            // Draw Decorative Borders
+            // Thick Outer Border (Dark Blue)
+            doc.lineWidth(20);
+            doc.rect(0, 0, doc.page.width, doc.page.height).stroke('#0A3D62');
             
-            doc.fontSize(40).fillColor('#333').text('Certificate of Completion', { align: 'center' });
-            doc.moveDown();
+            // Thin Inner Border (Gold)
+            doc.lineWidth(2);
+            doc.rect(25, 25, doc.page.width - 50, doc.page.height - 50).stroke('#D4AF37');
+
+            const centerX = doc.page.width / 2;
+
+            // Certificate Header
+            doc.moveDown(2);
+            doc.fontSize(45)
+               .font('Helvetica-Bold')
+               .fillColor('#0A3D62')
+               .text('CERTIFICATE', { align: 'center' });
             
-            doc.fontSize(20).text('This is to certify that', { align: 'center' });
-            doc.moveDown();
+            doc.fontSize(20)
+               .font('Helvetica')
+               .fillColor('#333')
+               .text('OF COMPLETION', { align: 'center', characterSpacing: 2 });
 
-            doc.fontSize(30).fillColor('#00D8FF').text(certificateData.studentName, { align: 'center' });
-            doc.moveDown();
+            doc.moveDown(1);
 
-            doc.fontSize(20).fillColor('#333').text(`has successfully completed the internship program in`, { align: 'center' });
-            doc.moveDown();
+            // Statement
+            doc.fontSize(16)
+               .font('Helvetica')
+               .fillColor('#555')
+               .text('This is to certify that', { align: 'center' });
 
-            doc.fontSize(25).fillColor('#00D8FF').text(certificateData.internshipDomain, { align: 'center' });
-            doc.moveDown();
+            doc.moveDown(1);
 
-            doc.fontSize(15).fillColor('#333').text(`From: ${new Date(certificateData.startDate).toDateString()} To: ${new Date(certificateData.endDate).toDateString()}`, { align: 'center' });
-            doc.moveDown();
+            // Student Name
+            doc.fontSize(36)
+               .font('Helvetica-Bold')
+               .fillColor('#D4AF37')
+               .text(certificateData.studentName.toUpperCase(), { align: 'center' });
 
-            doc.fontSize(15).fillColor('#333').text(`Issue Date: ${new Date(certificateData.issueDate).toDateString()}`, { align: 'right' });
-            doc.text(`Certificate ID: ${certificateData.certificateId}`, { align: 'left' });
+            // Decorative Line under Name
+            doc.lineWidth(1);
+            doc.moveTo(centerX - 150, doc.y + 5)
+               .lineTo(centerX + 150, doc.y + 5)
+               .stroke('#D4AF37');
 
+            doc.moveDown(1);
+
+            // Domain Text
+            doc.fontSize(16)
+               .font('Helvetica')
+               .fillColor('#555')
+               .text('has successfully completed the internship program in', { align: 'center' });
+
+            doc.moveDown(1);
+
+            // Internship Domain
+            doc.fontSize(24)
+               .font('Helvetica-Bold')
+               .fillColor('#0A3D62')
+               .text(certificateData.internshipDomain, { align: 'center' });
+
+            doc.moveDown(1);
+
+            // Dates
+            doc.fontSize(14)
+               .font('Helvetica')
+               .fillColor('#555')
+               .text(`From: ${new Date(certificateData.startDate).toLocaleDateString()}  To: ${new Date(certificateData.endDate).toLocaleDateString()}`, { align: 'center' });
+
+            doc.moveDown(1);
+
+            // Footer Section (Signatures and QR)
+            const footerY = doc.page.height - 200;
+
+            // QR Code (Left)
             const qrCodeDataUrl = await QRCode.toDataURL(verificationLink);
             const qrCodeBuffer = Buffer.from(qrCodeDataUrl.split(',')[1], 'base64');
-            doc.image(qrCodeBuffer, 50, doc.page.height - 150, { width: 100 });
+            doc.image(qrCodeBuffer, 80, footerY, { width: 90 });
+            doc.fontSize(10)
+               .font('Helvetica')
+               .fillColor('#555')
+               .text('Scan to Verify', 85, footerY + 95);
+
+            // Signature (Right)
+            doc.lineWidth(1);
+            doc.moveTo(doc.page.width - 250, footerY + 80)
+               .lineTo(doc.page.width - 80, footerY + 80)
+               .stroke('#333');
             
-            doc.text('Scan to Verify', 50, doc.page.height - 40);
+            doc.fontSize(14)
+               .font('Helvetica-Bold')
+               .fillColor('#0A3D62')
+               .text('Authorized Signatory', doc.page.width - 250, footerY + 90, { width: 170, align: 'center' });
+
+            // Certificate Info (Bottom Center)
+            doc.fontSize(10)
+               .font('Helvetica')
+               .fillColor('#777')
+               .text(`Certificate ID: ${certificateData.certificateId}`, 0, doc.page.height - 80, { align: 'center' });
+            
+            doc.text(`Issue Date: ${new Date(certificateData.issueDate).toLocaleDateString()}`, { align: 'center' });
 
             doc.end();
 

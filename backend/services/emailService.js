@@ -1,35 +1,45 @@
-import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 dotenv.config();
 
-// Initialize the transporter using Ethereal email or a real service
-const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST || 'smtp.ethereal.email',
-    port: process.env.EMAIL_PORT || 587,
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
-});
-
+/**
+ * Sends a certificate notification email using the EmailJS REST API
+ * @param {string} candidateEmail 
+ * @param {string} candidateName 
+ * @param {string} certificateId 
+ * @param {string} verificationLink 
+ * @returns {Promise<boolean>}
+ */
 export const sendCertificateEmail = async (candidateEmail, candidateName, certificateId, verificationLink) => {
     try {
-        const mailOptions = {
-            from: process.env.EMAIL_FROM || '"Admin" <admin@certicreate.com>',
-            to: candidateEmail,
-            subject: 'Your Internship Certificate is Ready!',
-            html: `
-                <h3>Congratulations, ${candidateName}!</h3>
-                <p>Your internship certificate has been successfully generated.</p>
-                <p><strong>Certificate ID:</strong> ${certificateId}</p>
-                <p>You can verify and download your certificate using the link below:</p>
-                <a href="${verificationLink}">Verify Certificate</a>
-            `
+        const payload = {
+            service_id: process.env.EMAILJS_SERVICE_ID,
+            template_id: process.env.EMAILJS_TEMPLATE_ID,
+            user_id: process.env.EMAILJS_PUBLIC_KEY,
+            accessToken: process.env.EMAILJS_PRIVATE_KEY, // Private key for backend-side sending
+            template_params: {
+                to_name: candidateName,
+                to_email: candidateEmail,
+                certificate_id: certificateId,
+                verification_link: verificationLink,
+            },
         };
 
-        const info = await transporter.sendMail(mailOptions);
-        console.log('Email sent: %s', info.messageId);
-        return true;
+        const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        });
+
+        if (response.ok) {
+            console.log(`Email successfully sent to ${candidateEmail} via EmailJS`);
+            return true;
+        } else {
+            const errorText = await response.text();
+            console.error('EmailJS API Error:', errorText);
+            return false;
+        }
     } catch (error) {
         console.error('Email send error:', error);
         return false;
